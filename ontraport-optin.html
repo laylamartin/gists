@@ -1,0 +1,47 @@
+<script>
+    var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == 'attachEvent' ? 'onmessage' : 'message';
+
+    eventer(messageEvent, function(event) {      
+        if (typeof event.data === 'object') {         
+            if (event.data.event === 'url') {
+                window.location.href = event.data.url;
+            }
+        }
+    }, false);
+</script>
+
+<script>
+    var open_modal_when_loaded = window.setInterval(function () {
+        if (window.__OPF) {
+            clearInterval(open_modal_when_loaded);
+
+            document.body.classList.add('hide-opf');
+            document.querySelector('a[href*="__OPF.open"]').click();
+        }
+    }, 100);
+ 
+    var close_modal_when_loaded = window.setInterval(function () {
+        if (document.body.dataset.opTracked) {
+            clearInterval(close_modal_when_loaded);
+
+            var event = document.createEvent('Events');
+            event.initEvent('click', true, false);
+        
+            document.querySelector('.OPF__modal-form__close-button').dispatchEvent(event);
+
+            document.body.classList.remove('hide-opf');
+        }
+    }, 200);
+</script>
+
+<style type="text/css">
+    .hide-opf .opf__overlay,
+    .hide-opf .OPF__modal-form {
+        display: none !important;
+    }
+    .OPF__modal-form, .OPF__modal-form__wrapper {
+        transition: opacity .5s ease-in-out !important;
+    }
+</style>
