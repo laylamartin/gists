@@ -13,7 +13,6 @@ addEventListener("fetch", (event) => {
 })
 
 async function handleRequest(request) {
-    console.log('a', Date.now());
   const url = new URL(request.url)
 
   if (! url.pathname.startsWith("/sso/thinkific-chargebee")) {
