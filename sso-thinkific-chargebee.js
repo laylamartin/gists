@@ -2,7 +2,7 @@ const secretKey = "..."
 const chargebeeKey = "..."
 
 const chargebeeURL = "https://laylamartin-test.chargebee.com/api/v2"
-const redirectURL = "https://laylamartin.thinkific.com/account"
+const redirectURL = "https://learn.laylamartin.com/account"
 
 addEventListener("fetch", (event) => {
   event.respondWith(
