@@ -73,17 +73,19 @@ async function handleRequest(request) {
       return new Response(`No customer found with the email: ${email}`, { status: 404 })
     }
 
-    const sessionResponse = await fetch(`${chargebeeURL}/portal_sessions?email[is]=${emailEncoded}`, {
+    const customerId = customers.list[0].customer.id
+
+    const sessionResponse = await fetch(`${chargebeeURL}/portal_sessions`, {
         method: "POST",
         headers: { "Authorization": `Basic ${chargebeeKey}` },
         body: new URLSearchParams({
-          "customer[id]": customers.list[0].customer.id,
+          "customer[id]": customerId,
           "redirect_url": redirectURL,
         })
     })
 
     if (! sessionResponse.ok) {
-      return new Response("Failed to create session", { status: 500 })
+      return new Response(`Failed to create session for customer: ${customerId}`, { status: 500 })
     }
 
     const session = await sessionResponse.json()
