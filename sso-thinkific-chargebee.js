@@ -28,6 +28,7 @@ async function handleRequest(request) {
   const expiry = Number(url.searchParams.get("expiry"))
   const signature = url.searchParams.get("secret")
   const secretKey = "squad-taps-earphone-sleek"
+  const chargebeeAuth = btoa(`${chargebeeKey}:`)
 
   const encoder = new TextEncoder()
 
@@ -56,17 +57,17 @@ async function handleRequest(request) {
     }
 
     const customerResponse = await fetch(`${chargebeeURL}/customers?email[is]=${emailEncoded}`, {
-        headers: { "Authorization": `Basic ${chargebeeKey}` },
+        headers: { "Authorization": `Basic ${chargebeeAuth}` },
     })
 
     if (! customerResponse.ok) {
-      return new Response("Failed to fetch customer", { status: 500 })
+      return new Response(`Failed to fetch customer (${customerResponse.status})`, { status: 500 })
     }
 
     const customers = await customerResponse.json()
 
     if (! customers.list) {
-      return new Response("Error fetching customer", { status: 500 })
+      return new Response(`Error fetching customer (${customerResponse.status})`, { status: 500 })
     }
 
     if (! customers.list.length) {
@@ -77,7 +78,7 @@ async function handleRequest(request) {
 
     const sessionResponse = await fetch(`${chargebeeURL}/portal_sessions`, {
         method: "POST",
-        headers: { "Authorization": `Basic ${chargebeeKey}` },
+        headers: { "Authorization": `Basic ${chargebeeAuth}` },
         body: new URLSearchParams({
           "customer[id]": customerId,
           "redirect_url": redirectURL,
